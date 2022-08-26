@@ -1,1 +1,3 @@
-test123
+# Notes, brainstorming and modeling of AMMs on Ethereum
+
+See [notebooks/](notebooks/).
