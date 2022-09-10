@@ -11,12 +11,23 @@ def quote(amountA, reserveA, reserveB):
     return amountB
 
 # SWAP
-# simplified version of above
+# given amount0_delta to add to reserve0, how many of reserve1 to add
 def get_amount_delta(amount0_delta, reserve0, reserve1):
     dx = amount0_delta
     x = reserve0
     y = reserve1
     return (-dx*y)/(x+dx)
+
+def transfer(from_, to, amount, token_name):
+    # todo: make sure balance doesn't go negative
+    from_.balance_of[token_name] -= amount
+    to.balance_of[token_name] += amount
+
+# Person is really a wallet with a name
+class Person():
+    def __init__(self, name):
+        self.name = name
+        self.balance_of = {}
 
 # Simple ERC20 token
 class SimpleToken:
@@ -31,10 +42,12 @@ class SimpleToken:
         self.balance_of[from_] = self.balance_of.get(from_, 0) - value
     
 class SimpleSwap(SimpleToken):
-    def __init__(self):
+    def __init__(self, token0_name, token1_name):
         super().__init__();
         self.reserve0 = 0
         self.reserve1 = 0
+        self.token0_name = token0_name
+        self.token1_name = token1_name
     def k(self):
         return self.reserve0 * self.reserve1
     def liquidity(self):
@@ -89,5 +102,5 @@ class SimpleSwap(SimpleToken):
             self.reserves_priced_in_token1())
         )
         print("LPs = {}".format(self.balance_of))
-        print("1 token0 = {} token1".format(self.price0()))
-        print("1 token1 = {} token0".format(self.price1()))
+        print("1 token0 = {} {}".format(self.price0(), self.token1_name))
+        print("1 token1 = {} {}".format(self.price1(), self.token0_name))
